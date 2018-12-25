@@ -1,0 +1,36 @@
+#!/bin/sh
+
+red='\033[0;31m'
+green='\033[0;32m'
+noColor='\033[0m'
+# for XXX and YYY
+projectDir=$(git rev-parse --show-toplevel)
+lintProjects=("app" "lintaar")
+
+lintReportPath=()
+lintIssueArray=()
+index=0
+
+for project in ${lintProjects[@]}
+do
+# Android lint check
+echo "-----------------Starting run android lint for ${project}-----------------"
+for issueCount in $(./gradlew ${project}:lint 2>/dev/null | grep "Ran lint on variant" | egrep -o '[0-9]+')
+do 
+    if [ $issueCount -ne 0 ] 
+    then
+        lintIssueArray[index]=$issueCount
+        lintReportPath[index]="${project}/build/reports/lint-results.html"
+        index=$[index+1]
+    fi
+done
+done
+
+for path in ${lintReportPath[*]}; do
+	echo "${red}lintReportPath : ${path}"
+done
+
+if [[ ${#lintReportPath[@]} -ne 0 ]];
+then
+    exit 1
+fi

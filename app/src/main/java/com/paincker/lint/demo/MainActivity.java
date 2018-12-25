@@ -27,8 +27,6 @@ public class MainActivity extends Activity {
             }
         }).run();
 
-
-
         Toast.makeText(this, "version_code= " + getVersionCode(this), Toast.LENGTH_LONG).show();
         Toast.makeText(this, "version_name= " + getVersionName(this), Toast.LENGTH_LONG).show();
     }
