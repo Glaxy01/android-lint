@@ -1,0 +1,6 @@
+Ran lint on variant release: 1 issues found
+Ran lint on variant debug: 1 issues found
+Wrote HTML report to file:///Users/zhengenguo/Documents/project/Android-Lint/lintaar/build/reports/lint-results.html
+Ran lint on variant release: 1 issues found
+Ran lint on variant debug: 1 issues found
+Wrote HTML report to file:///Users/zhengenguo/Documents/project/Android-Lint/lintaar/build/reports/lint-results.html

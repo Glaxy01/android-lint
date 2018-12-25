@@ -1,0 +1,11 @@
+#!/bin/sh
+cmd_result=`gradlew lintaar:lint 2>/dev/null | egrep 'Ran lint on variant|Wrote HTML report to file:' >> cmd_result_file.txt`
+while read line
+do
+    echo $line
+done < cmd_result_file.txt
+
+lineCount=`cat cmd_result_file.txt |wc -l`
+if [[ lineCount -ne 0  ]]; then
+	echo $lineCount
+fi
