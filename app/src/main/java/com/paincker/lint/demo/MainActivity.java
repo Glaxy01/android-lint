@@ -20,6 +20,7 @@ public class MainActivity extends Activity {
         callNewApi();
         Log.d("tag", "msg");
 
+        
         new Thread(new Runnable() {
 
             @Override

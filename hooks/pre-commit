@@ -7,22 +7,40 @@ noColor='\033[0m'
 projectDir=$(git rev-parse --show-toplevel)
 lintProjects=("app" "lintaar")
 
+rm project_issue.txt
+
 for project in ${lintProjects[@]}
 do
 # Android lint check
 echo "-----------------Starting run android lint for ${project}-----------------"
-projece_issue_file_cmd=`./gradlew ${project}:lint 2>/dev/null | grep  'Ran lint on variant|Wrote HTML report to file:' >> project_issue.txt`
+projece_issue_file_cmd=`./gradlew ${project}:lint | egrep  'Ran lint on variant|Wrote HTML report to file:' >> project_issue.txt`
 done
 
-cat project_issue.txt
+rm final_issues.txt
 
+out=1
 while read line
 do
-    echo $line
+	if [[ $line =~ ^Ran ]]; then
+		issues=`echo "$line" | egrep -o "[0-9]+"`
+		if [[  $issues -ne 0 ]]; then
+			out=2
+			echo $line>>final_issues.txt
+		else
+			out=3
+		fi
+	else
+		if [[ $out -eq 2 ]]; then
+			echo $line>>final_issues.txt
+		fi
+		out=1
+	fi
 done < project_issue.txt
 
 lineCount=`cat project_issue.txt |wc -l`
 if [[ lineCount -ne 0  ]]; then
-	echo $lineCount
+	echo "${red}detect some issues,please fix issues first!"
+	echo "${red}cancel commit action already!"
+	cat final_issues.txt
 	exit 1
 fi

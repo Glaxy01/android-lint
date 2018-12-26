@@ -1,11 +1,30 @@
 #!/bin/sh
-cmd_result=`gradlew lintaar:lint 2>/dev/null | egrep 'Ran lint on variant|Wrote HTML report to file:' >> cmd_result_file.txt`
+# rm cmd_result_file.txt
+# cmd_result=`gradlew lintaar:lint 2>/dev/null | egrep 'Ran lint on variant|Wrote HTML report to file:' >> cmd_result_file.txt`
+# cat cmd_result_file.txt
+
+# grep "Ran" cmd_result_file.txt | egrep -o [0-9]+
+
+
+rm final_result.txt
+
+out=1
 while read line
 do
-    echo $line
+	if [[ $line =~ ^Ran ]]; then
+		issues=`echo "$line" | egrep -o "[0-9]+"`
+		if [[  $issues -ne 0 ]]; then
+			out=2
+			echo $line>>final_result.txt
+			echo "find $issues issues"
+		else
+			out=3
+			echo "no issues"
+		fi
+	else
+		if [[ $out -eq 2 ]]; then
+			echo $line>>final_result.txt
+		fi
+		out=1
+	fi
 done < cmd_result_file.txt
-
-lineCount=`cat cmd_result_file.txt |wc -l`
-if [[ lineCount -ne 0  ]]; then
-	echo $lineCount
-fi
